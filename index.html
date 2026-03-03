@@ -3,254 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEMO WEB | ตัวอย่างเว็บไซต์</title>
+    <title>DEMO WEB | ทดลองระบบฟรี</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #f8f9fa; color: #333; }
-        .theme-color { color: #ff0040; }
-        .bg-theme { background-color: #ff0040; }
-        .btn-theme { background-color: #ff0040; color: white; transition: 0.3s; }
-        .btn-theme:hover { background-color: #d60036; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 0, 64, 0.3); }
-        .nav-item:hover { color: #ff0040; }
+        /* 🎨 ธีมสีแดง-ขาว */
+        :root { --primary: #e11d48; }
+        body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; color: #334155; overflow-x: hidden; }
         
-        /* จำลองหน้าจอ */
-        .page-section { display: none; animation: fadeIn 0.4s; }
-        .page-section.active { display: block; }
+        .btn-primary { background-color: var(--primary); color: white; transition: 0.3s; }
+        .btn-primary:hover { background-color: #be123c; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3); }
+        
+        .nav-link { color: #64748b; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .nav-link:hover, .nav-link.active { color: var(--primary); }
+
+        /* ✨ Key: ซ่อนหน้าอื่นๆ ให้หมด */
+        .page-section { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        
+        /* ✨ Key: โชว์เฉพาะหน้าที่ Active */
+        .page-section.active { display: block; opacity: 1; animation: fadeIn 0.4s; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen flex flex-col">
 
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="bg-yellow-400 text-black text-center text-xs font-bold py-2 px-4 shadow-sm sticky top-0 z-[60]">
+        <i class="fa-solid fa-flask"></i> เว็บไซต์จำลองสำหรับทดสอบระบบ (ข้อมูลไม่ถูกบันทึกจริง)
+    </div>
+
+    <nav class="bg-white shadow-sm sticky top-[32px] z-50 border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-2 cursor-pointer" onclick="showPage('home')">
-                    <div class="w-8 h-8 bg-theme rounded flex items-center justify-center text-white font-black italic text-lg">Z</div>
-                    <span class="font-bold text-xl tracking-tight">DEMO STORE</span>
+                    <div class="w-9 h-9 bg-rose-600 rounded-lg flex items-center justify-center text-white font-black italic text-lg shadow-lg shadow-rose-200">Z</div>
+                    <span class="font-bold text-xl tracking-tight text-slate-800">DEMO<span class="text-rose-600">STORE</span></span>
                 </div>
 
-                <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-500">
-                    <a href="#" onclick="showPage('home')" class="nav-item text-gray-900">หน้าหลัก</a>
-                    <a href="#" class="nav-item">เติมเงิน</a>
-                    <a href="#" class="nav-item">ร้านค้า</a>
-                    <a href="#" class="nav-item">เกี่ยวกับเรา</a>
+                <div class="hidden md:flex space-x-8 text-sm">
+                    <a onclick="showPage('home')" class="nav-link active">หน้าหลัก</a>
+                    <a onclick="alert('ระบบจำลอง: เมนูนี้ใช้งานได้จริงในตัวเต็มครับ')" class="nav-link">เติมเงิน</a>
+                    <a onclick="showPage('shop')" class="nav-link">ร้านค้า</a>
+                    <a onclick="alert('ระบบจำลอง: ติดต่อแอดมินตัวจริงได้ที่เพจครับ')" class="nav-link">ติดต่อเรา</a>
                 </div>
 
                 <div class="flex items-center gap-3">
                     <div id="guest-menu" class="flex gap-2">
-                        <button onclick="showPage('login')" class="px-4 py-1.5 rounded-full border border-gray-300 text-xs font-bold hover:bg-gray-50 transition"><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ</button>
-                        <button onclick="showPage('register')" class="px-4 py-1.5 rounded-full bg-theme text-white text-xs font-bold hover:opacity-90 transition"><i class="fa-solid fa-user-plus"></i> สมัครสมาชิก</button>
+                        <button onclick="showPage('login')" class="px-5 py-2 rounded-full border border-gray-200 text-xs font-bold hover:bg-gray-50 transition text-slate-600">เข้าสู่ระบบ</button>
+                        <button onclick="showPage('register')" class="px-5 py-2 rounded-full btn-primary text-xs font-bold shadow-lg shadow-rose-200">สมัครสมาชิก</button>
                     </div>
+                    
                     <div id="user-menu" class="hidden gap-3 items-center">
-                        <div class="text-right hidden sm:block">
-                            <div class="text-xs font-bold">User Test</div>
-                            <div class="text-[10px] text-gray-400">Credit: ฿0.00</div>
+                        <div class="text-right hidden sm:block leading-tight">
+                            <div class="text-sm font-bold text-slate-800">DemoUser01</div>
+                            <div class="text-[10px] text-rose-500 font-bold">฿<span id="user-balance">500.00</span></div>
                         </div>
-                        <button onclick="showPage('dashboard')" class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition"><i class="fa-solid fa-user"></i></button>
-                        <button onclick="logout()" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-power-off"></i></button>
+                        <button onclick="showPage('dashboard')" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center hover:bg-rose-50 hover:text-rose-600 transition border border-gray-200"><i class="fa-solid fa-user"></i></button>
+                        <button onclick="logout()" class="text-gray-400 hover:text-red-500 ml-2"><i class="fa-solid fa-right-from-bracket"></i></button>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div id="page-home" class="page-section active pb-20">
-        <div class="bg-gray-900 relative overflow-hidden">
-            <div class="max-w-6xl mx-auto">
-                <img src="https://via.placeholder.com/1920x540/111/ff0040?text=YOUR+BANNER+HERE" class="w-full h-auto object-cover opacity-80">
-                <div class="absolute inset-0 flex flex-col justify-center px-10 text-white">
-                    <h1 class="text-4xl font-bold mb-2 drop-shadow-lg">ตัวอย่างเว็บไซต์</h1>
-                    <p class="text-lg opacity-80">ขนาด 1920 x 540 px</p>
+    <div class="flex-grow">
+        
+        <div id="page-home" class="page-section active">
+            <div class="bg-slate-900 relative overflow-hidden h-[300px] md:h-[400px] flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900 to-rose-900 opacity-90"></div>
+                <div class="relative z-10 text-center text-white px-4">
+                    <span class="bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold mb-4 inline-block backdrop-blur-md">Premium Template</span>
+                    <h1 class="text-4xl md:text-6xl font-black mb-4 drop-shadow-2xl">ตัวอย่างเว็บไซต์</h1>
+                    <p class="text-slate-300 text-sm md:text-base max-w-lg mx-auto">นี่คือหน้าเว็บจำลอง ลูกค้าสามารถกดเล่นเมนูต่างๆ ได้เหมือนจริง</p>
+                    <button onclick="showPage('shop')" class="mt-8 px-8 py-3 bg-white text-rose-600 rounded-full font-bold hover:bg-gray-100 transition shadow-xl transform hover:scale-105">ดูสินค้าทั้งหมด</button>
                 </div>
             </div>
-        </div>
-
-        <div class="bg-white border-b border-gray-100 py-2">
-            <div class="max-w-6xl mx-auto px-4 flex items-center gap-4">
-                <span class="bg-theme text-white text-[10px] px-2 py-1 rounded font-bold">ประกาศ</span>
-                <marquee class="text-xs text-gray-500">ยินดีต้อนรับสู่ระบบร้านค้าออนไลน์ ทดลองใช้งานระบบฟรี!</marquee>
-            </div>
-        </div>
-
-        <div class="max-w-6xl mx-auto px-4 mt-10">
-            <div class="flex justify-between items-end mb-4">
-                <h2 class="text-xl font-bold border-l-4 border-theme pl-3 leading-none">สินค้าแนะนำ <span class="text-xs text-gray-400 font-normal ml-2">Recommended</span></h2>
-                <a href="#" class="text-xs text-gray-400 hover:text-theme">ดูทั้งหมด <i class="fa-solid fa-arrow-right"></i></a>
+            
+            <div class="bg-white border-b border-gray-200 py-3">
+                <div class="max-w-6xl mx-auto px-4 flex items-center gap-4">
+                    <span class="bg-rose-600 text-white text-[10px] px-2 py-1 rounded font-bold shrink-0">NEWS</span>
+                    <marquee class="text-xs text-slate-500 font-medium">ยินดีต้อนรับสู่ระบบจำลอง (Demo) ข้อมูลทั้งหมดในหน้านี้เป็นเพียงตัวอย่าง ไม่มีการบันทึกจริง</marquee>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group border border-gray-100">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/500x500/222/fff?text=PRODUCT+01" class="w-full aspect-square object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute top-2 right-2 bg-theme text-white text-[10px] font-bold px-2 py-1 rounded shadow">HOT</div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-gray-800 text-lg mb-1">ID GAME VIP</h3>
-                        <p class="text-xs text-gray-400 mb-3">รับประกันการใช้งาน 30 วัน</p>
-                        <div class="flex justify-between items-center">
-                            <div class="text-theme font-black text-xl">฿150</div>
-                            <button onclick="alert('นี่คือเว็บตัวอย่างครับ 🍑')" class="btn-theme px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-cart-shopping"></i> สั่งซื้อ</button>
+            <div class="max-w-6xl mx-auto px-4 mt-12 pb-20">
+                <div class="flex justify-between items-end mb-6">
+                    <div><h2 class="text-2xl font-black text-slate-800">สินค้าแนะนำ 🔥</h2><p class="text-xs text-slate-400">คัดสรรสินค้าคุณภาพเพื่อคุณ</p></div>
+                    <a onclick="showPage('shop')" class="text-xs font-bold text-rose-600 hover:underline cursor-pointer">ดูทั้งหมด</a>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer" onclick="buyItem('Netflix 4K', 120)">
+                        <div class="relative">
+                            <div class="aspect-[4/3] bg-slate-200 group-hover:scale-105 transition duration-500 flex items-center justify-center text-slate-400 text-4xl"><i class="fa-solid fa-image"></i></div>
+                            <div class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md">HOT</div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-slate-800 mb-1">Netflix 4K (30 วัน)</h3>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-xl font-black text-rose-600">฿120</span>
+                                <button class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-basket-shopping"></i></button>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group border border-gray-100">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/500x500/222/fff?text=PRODUCT+02" class="w-full aspect-square object-cover group-hover:scale-110 transition duration-500">
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-gray-800 text-lg mb-1">Code Item Rare</h3>
-                        <p class="text-xs text-gray-400 mb-3">ไอเทมหายาก จำนวนจำกัด</p>
-                        <div class="flex justify-between items-center">
-                            <div class="text-theme font-black text-xl">฿390</div>
-                            <button onclick="alert('นี่คือเว็บตัวอย่างครับ 🍑')" class="btn-theme px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-cart-shopping"></i> สั่งซื้อ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group border border-gray-100">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/500x500/222/fff?text=PRODUCT+03" class="w-full aspect-square object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute top-2 left-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow">NEW</div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-gray-800 text-lg mb-1">Topup Service</h3>
-                        <p class="text-xs text-gray-400 mb-3">บริการเติมเกมราคาถูก</p>
-                        <div class="flex justify-between items-center">
-                            <div class="text-theme font-black text-xl">฿99</div>
-                            <button onclick="alert('นี่คือเว็บตัวอย่างครับ 🍑')" class="btn-theme px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-cart-shopping"></i> สั่งซื้อ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group border border-gray-100">
-                    <div class="relative overflow-hidden">
-                        <img src="https://via.placeholder.com/500x500/222/fff?text=PRODUCT+04" class="w-full aspect-square object-cover group-hover:scale-110 transition duration-500">
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-gray-800 text-lg mb-1">Random Box</h3>
-                        <p class="text-xs text-gray-400 mb-3">กล่องสุ่มลุ้นรางวัลใหญ่</p>
-                        <div class="flex justify-between items-center">
-                            <div class="text-theme font-black text-xl">฿50</div>
-                            <button onclick="alert('นี่คือเว็บตัวอย่างครับ 🍑')" class="btn-theme px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-cart-shopping"></i> สั่งซื้อ</button>
+                    <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group cursor-pointer" onclick="buyItem('Spotify Premium', 49)">
+                        <div class="relative"><div class="aspect-[4/3] bg-slate-200 group-hover:scale-105 transition duration-500 flex items-center justify-center text-slate-400 text-4xl"><i class="fa-brands fa-spotify"></i></div></div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-slate-800 mb-1">Spotify Premium</h3>
+                            <div class="flex justify-between items-center mt-4"><span class="text-xl font-black text-rose-600">฿49</span><button class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-basket-shopping"></i></button></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="page-login" class="page-section min-h-[80vh] flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm border border-gray-100 text-center">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">เข้าสู่ระบบ</h2>
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-xs font-bold text-gray-500 ml-1">ชื่อผู้ใช้งาน</label>
-                    <input type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-theme transition" placeholder="Username">
+        <div id="page-login" class="page-section">
+            <div class="min-h-[80vh] flex items-center justify-center p-4">
+                <div class="bg-white p-8 md:p-10 rounded-3xl shadow-xl w-full max-w-sm border border-gray-100 text-center animate-fade-up">
+                    <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl"><i class="fa-solid fa-user-lock"></i></div>
+                    <h2 class="text-2xl font-black mb-2 text-slate-800">เข้าสู่ระบบ (จำลอง)</h2>
+                    <p class="text-xs text-slate-400 mb-8">กดปุ่มด้านล่างเพื่อเข้าใช้งานได้เลย</p>
+                    <div class="space-y-4 text-left">
+                        <div><label class="text-xs font-bold text-slate-500 ml-1">ชื่อผู้ใช้งาน</label><input type="text" value="DemoUser" readonly class="w-full bg-slate-50 border border-gray-200 rounded-xl p-3 text-sm text-slate-400 cursor-not-allowed"></div>
+                        <div><label class="text-xs font-bold text-slate-500 ml-1">รหัสผ่าน</label><input type="password" value="123456" readonly class="w-full bg-slate-50 border border-gray-200 rounded-xl p-3 text-sm text-slate-400 cursor-not-allowed"></div>
+                        <button onclick="login()" class="w-full btn-primary py-3.5 rounded-xl font-bold shadow-lg shadow-rose-200 mt-4">ทดลองกดเข้าสู่ระบบ</button>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-6 cursor-pointer hover:text-rose-600" onclick="showPage('register')">ยังไม่มีบัญชี? สมัครสมาชิก (จำลอง)</p>
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-500 ml-1">รหัสผ่าน</label>
-                    <input type="password" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-theme transition" placeholder="Password">
-                </div>
-                <div class="flex items-center gap-2 border border-gray-200 p-3 rounded-lg bg-gray-50">
-                    <input type="checkbox" class="accent-red-500">
-                    <span class="text-xs text-gray-500">ฉันไม่ใช่โปรแกรมอัตโนมัติ</span>
-                </div>
-                <button onclick="login()" class="w-full btn-theme py-3 rounded-lg font-bold shadow-lg">เข้าสู่ระบบ</button>
-            </div>
-            <p class="text-xs text-gray-400 mt-4 cursor-pointer hover:text-theme" onclick="showPage('register')">ยังไม่มีบัญชี? สมัครสมาชิก</p>
-        </div>
-    </div>
-
-    <div id="page-register" class="page-section min-h-[80vh] flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm border border-gray-100 text-center">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">สมัครสมาชิก</h2>
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-xs font-bold text-gray-500 ml-1">ชื่อผู้ใช้งาน</label>
-                    <input type="text" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-theme transition" placeholder="ตั้งชื่อไอดี">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-500 ml-1">รหัสผ่าน</label>
-                    <input type="password" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-theme transition" placeholder="ตั้งรหัสผ่าน">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-500 ml-1">ยืนยันรหัสผ่าน</label>
-                    <input type="password" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-theme transition" placeholder="ใส่อีกครั้ง">
-                </div>
-                <button onclick="login()" class="w-full btn-theme py-3 rounded-lg font-bold shadow-lg">สมัครสมาชิก</button>
-            </div>
-            <p class="text-xs text-gray-400 mt-4 cursor-pointer hover:text-theme" onclick="showPage('login')">มีบัญชีแล้ว? เข้าสู่ระบบ</p>
-        </div>
-    </div>
-
-    <div id="page-dashboard" class="page-section pb-20">
-        <div class="bg-white border-b border-gray-200">
-            <div class="max-w-6xl mx-auto px-4 py-4">
-                <h1 class="text-xl font-bold text-gray-800">จัดการหลังบ้าน <span class="text-xs font-normal text-gray-400 ml-2">User Dashboard</span></h1>
             </div>
         </div>
 
-        <div class="max-w-6xl mx-auto px-4 mt-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 text-center">
-                    <div class="text-3xl font-black text-theme mb-1">0</div>
-                    <div class="text-xs text-gray-400">การซื้อวันนี้</div>
-                </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 text-center">
-                    <div class="text-3xl font-black text-green-500 mb-1">0.00฿</div>
-                    <div class="text-xs text-gray-400">ยอดเติมเงิน</div>
-                </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 text-center">
-                    <div class="text-3xl font-black text-blue-500 mb-1">3</div>
-                    <div class="text-xs text-gray-400">สินค้าทั้งหมด</div>
-                </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 text-center">
-                    <div class="text-3xl font-black text-gray-800 mb-1">User</div>
-                    <div class="text-xs text-gray-400">สถานะสมาชิก</div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-bold text-lg mb-4 border-b pb-2">ข้อมูลส่วนตัว</h3>
-                <div class="space-y-2 text-sm text-gray-600">
-                    <p><span class="font-bold w-24 inline-block">Username:</span> TestUser001</p>
-                    <p><span class="font-bold w-24 inline-block">Email:</span> test@demo.com</p>
-                    <p><span class="font-bold w-24 inline-block">Point:</span> 0 แต้ม</p>
-                </div>
-                <div class="mt-6 flex gap-3">
-                    <button class="bg-theme text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:opacity-90">แก้ไขรหัสผ่าน</button>
-                    <button class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200">ประวัติการสั่งซื้อ</button>
+        <div id="page-register" class="page-section">
+            <div class="min-h-[80vh] flex items-center justify-center p-4">
+                <div class="bg-white p-8 md:p-10 rounded-3xl shadow-xl w-full max-w-sm border border-gray-100 text-center animate-fade-up">
+                    <h2 class="text-2xl font-black mb-6 text-slate-800">สมัครสมาชิก (จำลอง)</h2>
+                    <div class="space-y-4 text-left">
+                        <input type="text" class="w-full bg-slate-50 border border-gray-200 rounded-xl p-3 text-sm" placeholder="ตั้งชื่อไอดี">
+                        <input type="password" class="w-full bg-slate-50 border border-gray-200 rounded-xl p-3 text-sm" placeholder="ตั้งรหัสผ่าน">
+                        <button onclick="fakeRegister()" class="w-full btn-primary py-3.5 rounded-xl font-bold shadow-lg shadow-rose-200 mt-4">ยืนยันการสมัคร</button>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-6 cursor-pointer hover:text-rose-600" onclick="showPage('login')">มีบัญชีแล้ว? เข้าสู่ระบบ</p>
                 </div>
             </div>
         </div>
+
+        <div id="page-dashboard" class="page-section">
+            <div class="bg-white border-b border-gray-200"><div class="max-w-6xl mx-auto px-4 py-6"><h1 class="text-2xl font-black text-slate-800">บัญชีของฉัน</h1></div></div>
+            <div class="max-w-6xl mx-auto px-4 mt-8 pb-20">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
+                        <div class="w-20 h-20 bg-slate-100 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-slate-400"><i class="fa-solid fa-user"></i></div>
+                        <h3 class="font-bold text-lg">DemoUser01</h3>
+                        <div class="mt-6 bg-rose-50 text-rose-600 py-3 rounded-xl font-bold text-xl border border-rose-100">฿<span id="dash-balance">500.00</span></div>
+                    </div>
+                    <div class="md:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="font-bold text-lg mb-4 border-b pb-4">ประวัติการสั่งซื้อ</h3>
+                        <div id="order-history" class="space-y-3"><div class="text-center text-slate-400 text-sm py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">ยังไม่มีรายการสั่งซื้อ</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
+        let isLoggedIn = false;
+        let balance = 500.00;
+
         function showPage(pageId) {
-            // ซ่อนทุกหน้า
+            if (pageId === 'dashboard' && !isLoggedIn) { alert('🔒 กรุณาเข้าสู่ระบบก่อนครับ'); showPage('login'); return; }
+            
+            // 🌟 ซ่อนทุกหน้าก่อน
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            // แสดงหน้าที่เลือก
-            document.getElementById('page-' + pageId).classList.add('active');
+            
+            // 🌟 แสดงเฉพาะหน้าที่เลือก
+            const target = document.getElementById('page-' + (pageId === 'shop' ? 'home' : pageId));
+            if(target) target.classList.add('active');
+            
             window.scrollTo(0, 0);
         }
 
         function login() {
-            // จำลองการล็อกอิน
+            isLoggedIn = true;
             document.getElementById('guest-menu').classList.add('hidden');
             document.getElementById('user-menu').classList.remove('hidden');
             document.getElementById('user-menu').classList.add('flex');
             showPage('dashboard');
-            alert('🎉 เข้าสู่ระบบเรียบร้อย (จำลอง)');
         }
 
         function logout() {
+            isLoggedIn = false;
             document.getElementById('guest-menu').classList.remove('hidden');
             document.getElementById('user-menu').classList.add('hidden');
             document.getElementById('user-menu').classList.remove('flex');
             showPage('home');
+        }
+
+        function fakeRegister() { alert('🎉 สมัครสมาชิกจำลองสำเร็จ!'); showPage('login'); }
+
+        function buyItem(itemName, price) {
+            if (!isLoggedIn) { if(confirm('🔒 กรุณาเข้าสู่ระบบก่อนสั่งซื้อ')) showPage('login'); return; }
+            if (balance < price) { alert('❌ ยอดเงินไม่พอ'); return; }
+            if (confirm(`ยืนยันการซื้อ "${itemName}" ราคา ฿${price} ?`)) {
+                balance -= price;
+                document.getElementById('user-balance').innerText = balance.toFixed(2);
+                document.getElementById('dash-balance').innerText = balance.toFixed(2);
+                
+                const historyBox = document.getElementById('order-history');
+                if (historyBox.innerHTML.includes('ยังไม่มีรายการ')) historyBox.innerHTML = '';
+                historyBox.innerHTML = `<div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100"><span class="font-bold text-slate-700">${itemName}</span><span class="text-rose-600 font-bold">-฿${price}</span></div>` + historyBox.innerHTML;
+                alert(`✅ สั่งซื้อสำเร็จ!`);
+            }
         }
     </script>
 </body>
