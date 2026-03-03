@@ -2,30 +2,33 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DEMO WEB | ระบบจำลองร้านค้า</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --primary: #e11d48; --dark: #0f172a; }
-        body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; color: #334155; overflow-x: hidden; }
+        body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; color: #334155; overflow-x: hidden; touch-action: manipulation; }
         
         .btn-primary { background: linear-gradient(135deg, #e11d48, #be123c); color: white; transition: 0.3s; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(225, 29, 72, 0.4); }
+        .btn-primary:active { transform: scale(0.95); }
         
-        .page-section { display: none; animation: fadeIn 0.4s; }
+        .page-section { display: none; animation: fadeIn 0.3s; }
         .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Chat Styles */
         .chat-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 13px; position: relative; margin-bottom: 8px; word-wrap: break-word; }
         .chat-user { background: #e11d48; color: white; align-self: flex-end; border-bottom-right-radius: 2px; margin-left: auto; }
-        .chat-admin { background: #e2e8f0; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-admin { background: #fff; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #e2e8f0; }
         
-        .chat-sidebar-item { transition: 0.2s; border-left: 3px solid transparent; }
-        .chat-sidebar-item:hover, .chat-sidebar-item.active { background-color: #fff1f2; border-left-color: #e11d48; }
         .blink-dot { animation: blink 1.5s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Sticky Footer for Chat */
+        .chat-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #eee; padding: 10px; z-index: 50; }
+        .pb-safe { padding-bottom: 80px; } /* Space for bottom nav/chat input */
     </style>
 </head>
 <body class="flex flex-col min-h-screen bg-slate-50">
@@ -45,9 +48,9 @@
 
                 <div class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
                     <a onclick="showPage('home')" class="cursor-pointer hover:text-rose-600">หน้าหลัก</a>
-                    <a onclick="showPage('shop')" class="cursor-pointer hover:text-rose-600">ร้านค้า (20)</a>
+                    <a onclick="showPage('shop')" class="cursor-pointer hover:text-rose-600">ร้านค้า</a>
                     <a onclick="showPage('topup')" class="cursor-pointer hover:text-rose-600">เติมเงิน</a>
-                    <a onclick="showPage('chat')" class="cursor-pointer hover:text-rose-600 relative">ติดต่อเรา <span class="absolute -top-2 -right-3 bg-red-500 text-white text-[9px] px-1.5 rounded-full animate-bounce">Live</span></a>
+                    <a onclick="showPage('chat')" class="cursor-pointer hover:text-rose-600 relative">ติดต่อเรา</a>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -56,8 +59,8 @@
                         <button onclick="login()" class="px-4 py-1.5 rounded-full btn-primary text-xs font-bold">สมัครสมาชิก</button>
                     </div>
                     <div id="user-menu" class="hidden gap-3 items-center">
-                        <button onclick="showPage('backend')" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-slate-700 flex items-center gap-2">
-                            <i class="fa-solid fa-gear"></i> หลังบ้าน <span class="bg-red-500 w-2 h-2 rounded-full blink-dot"></span>
+                        <button onclick="showPage('backend')" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-slate-700 flex items-center gap-2 animate-pulse">
+                            <i class="fa-solid fa-gear"></i> หลังบ้าน
                         </button>
                         <div class="text-right hidden sm:block leading-tight cursor-pointer" onclick="showPage('profile')">
                             <div class="text-sm font-bold text-slate-800" id="nav-username">User</div>
@@ -71,12 +74,12 @@
     </nav>
 
     <div id="page-home" class="page-section active pb-20">
-        <div class="bg-slate-900 relative overflow-hidden h-[250px] md:h-[400px] flex items-center justify-center">
-            <img src="https://via.placeholder.com/1920x540/111827/e11d48?text=BANNER+SIZE+1920x540+PX" class="absolute inset-0 w-full h-full object-cover opacity-60">
+        <div class="bg-slate-900 relative overflow-hidden h-[250px] md:h-[400px] flex items-center justify-center group">
+            <img id="main-banner-img" src="https://via.placeholder.com/1920x540/111827/e11d48?text=1920x540+Banner+Area" class="absolute inset-0 w-full h-full object-cover opacity-80">
             <div class="relative z-10 text-center text-white px-4">
-                <span class="bg-rose-600/80 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold mb-3 inline-block">Recommended Size: 1920x540</span>
-                <h1 class="text-3xl md:text-5xl font-black mb-2 drop-shadow-xl">พื้นที่สำหรับแบนเนอร์หลัก</h1>
-                <p class="text-slate-300 text-sm md:text-base">ใส่รูปโปรโมชั่น หรือสไลด์โชว์สินค้าแนะนำ</p>
+                <span class="bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold mb-3 inline-block border border-white/20">Size: 1920 x 540 PX</span>
+                <h1 class="text-3xl md:text-5xl font-black mb-2 drop-shadow-xl" id="banner-title">พื้นที่แบนเนอร์หลัก</h1>
+                <p class="text-slate-300 text-sm md:text-base">สามารถแก้ไขรูปภาพได้ที่ระบบหลังบ้าน</p>
             </div>
         </div>
         
@@ -89,12 +92,10 @@
 
         <div class="max-w-7xl mx-auto px-4 mt-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold border-l-4 border-rose-600 pl-3">สินค้าทั้งหมด (20 รายการ)</h2>
-                <span class="text-xs text-slate-400">เรียงตาม: ล่าสุด</span>
+                <h2 class="text-xl font-bold border-l-4 border-rose-600 pl-3">สินค้าทั้งหมด</h2>
+                <span class="text-xs text-slate-400">แสดง 20 รายการ</span>
             </div>
-            
-            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                </div>
+            <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
         </div>
     </div>
 
@@ -106,57 +107,57 @@
     </div>
 
     <div id="page-topup" class="page-section pb-20">
-        <div class="max-w-md mx-auto mt-10 bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-xl font-bold text-center mb-6">เติมเงินเข้าระบบ</h2>
+        <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h2 class="text-xl font-bold text-center mb-6">เติมเงินอัตโนมัติ</h2>
             
             <div class="flex gap-2 mb-6 bg-slate-50 p-1 rounded-xl">
                 <button class="flex-1 py-2 rounded-lg bg-white text-rose-600 font-bold shadow-sm text-xs">ธนาคาร</button>
                 <button class="flex-1 py-2 rounded-lg text-slate-500 font-bold text-xs hover:bg-white/50">วอเลท</button>
-                <button class="flex-1 py-2 rounded-lg text-slate-500 font-bold text-xs hover:bg-white/50">อั่งเปา</button>
             </div>
 
             <div class="text-center mb-6 relative">
                 <div class="absolute top-2 right-2 bg-slate-800 text-white text-[9px] px-2 py-1 rounded opacity-80">Size: 500x500</div>
-                <img src="https://via.placeholder.com/500x500/e2e8f0/94a3b8?text=QR+CODE+HERE" class="mx-auto rounded-lg mb-3 w-40 border border-slate-200">
-                <p class="text-sm text-slate-500">ธนาคาร: <span class="font-bold text-slate-800">กสิกรไทย (ตัวอย่าง)</span></p>
-                <p class="text-xl font-black text-rose-600 my-1 tracking-widest">000-0-00000</p>
+                <img src="https://via.placeholder.com/500x500/e2e8f0/94a3b8?text=QR+CODE" class="mx-auto rounded-lg mb-3 w-40 border border-slate-200">
+                <p class="text-sm text-slate-500">กสิกรไทย: <span class="font-bold text-rose-600 text-lg">000-0-00000</span></p>
                 <p class="text-xs text-slate-400">ชื่อบัญชี: บจก. พีชเว็บ เดโม</p>
             </div>
 
             <div class="space-y-3">
-                <div class="bg-yellow-50 text-yellow-700 text-xs p-3 rounded-lg border border-yellow-100 flex gap-2">
-                    <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
-                    <div>กรุณาตรวจสอบยอดโอนให้ถูกต้อง ระบบจะตรวจสอบอัตโนมัติภายใน 1-3 นาที</div>
+                <div class="relative">
+                    <input type="file" id="slip-upload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="autoTopup(this)">
+                    <div class="w-full bg-rose-50 border-2 border-dashed border-rose-200 text-rose-600 py-4 rounded-xl font-bold text-center text-sm hover:bg-rose-100 transition">
+                        <i class="fa-solid fa-upload mb-1"></i><br>กดเพื่อแนบสลิป (จำลอง)
+                    </div>
                 </div>
-                <button onclick="fakeTopup()" class="w-full btn-primary py-3 rounded-xl font-bold shadow-lg">แนบสลิปแจ้งโอนเงิน</button>
+                <p class="text-[10px] text-center text-slate-400">*ระบบจะเติมเงินให้อัตโนมัติทันทีเมื่อเลือกรูป</p>
             </div>
         </div>
     </div>
 
-    <div id="page-chat" class="page-section pb-20">
-        <div class="max-w-2xl mx-auto mt-6 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden h-[600px] flex flex-col">
-            <div class="bg-slate-800 p-4 text-white flex justify-between items-center shadow-md z-10">
-                <div class="flex items-center gap-3">
-                    <div class="relative">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="w-10 h-10 rounded-full bg-white border-2 border-green-400">
-                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-800 rounded-full"></div>
-                    </div>
-                    <div>
-                        <div class="font-bold text-sm">Admin Peach Support</div>
-                        <div class="text-[10px] text-green-300">● กำลังใช้งาน</div>
-                    </div>
+    <div id="page-chat" class="page-section h-screen flex flex-col bg-white">
+        <div class="bg-slate-800 p-4 text-white flex justify-between items-center shadow-md z-10 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="w-10 h-10 rounded-full bg-white border-2 border-green-400">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-800 rounded-full animate-pulse"></div>
+                </div>
+                <div>
+                    <div class="font-bold text-sm">Admin Support</div>
+                    <div class="text-[10px] text-green-300">● กำลังใช้งาน</div>
                 </div>
             </div>
-            
-            <div id="chat-box" class="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-3">
-                <div class="text-center text-[10px] text-slate-400 my-4">-- เริ่มต้นการสนทนา --</div>
-                </div>
+            <button onclick="showPage('home')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-times"></i></button>
+        </div>
+        
+        <div id="chat-box" class="flex-1 p-4 overflow-y-auto bg-slate-100 space-y-3 pb-24">
+            <div class="text-center text-[10px] text-slate-400 my-4">-- วันนี้ --</div>
+            <div class="flex flex-col items-start"><div class="chat-bubble chat-admin">สวัสดีครับ มีอะไรให้ช่วยไหมครับ? 🍑</div></div>
+        </div>
 
-            <div class="p-3 bg-white border-t border-gray-100 flex gap-2 items-center">
-                <button onclick="alert('จำลองส่งรูปภาพ')" class="text-slate-400 hover:text-rose-600 px-2 transition"><i class="fa-solid fa-image text-xl"></i></button>
-                <input type="text" id="chat-input" class="flex-1 bg-slate-100 border-0 rounded-full px-4 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none transition" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key==='Enter') sendMessage()">
-                <button onclick="sendMessage()" class="bg-rose-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-rose-700 transition shadow-lg"><i class="fa-solid fa-paper-plane text-sm"></i></button>
-            </div>
+        <div class="bg-white border-t border-gray-200 p-3 flex gap-2 items-center fixed bottom-0 left-0 w-full z-50 safe-area-pb">
+            <button onclick="alert('ส่งรูปภาพ (จำลอง)')" class="text-slate-400 hover:text-rose-600 px-2 transition"><i class="fa-solid fa-image text-xl"></i></button>
+            <input type="text" id="chat-input" class="flex-1 bg-slate-100 border-0 rounded-full px-4 py-2.5 text-sm focus:ring-2 focus:ring-rose-500 outline-none transition" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" class="bg-rose-600 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-rose-700 transition shadow-lg"><i class="fa-solid fa-paper-plane text-sm"></i></button>
         </div>
     </div>
 
@@ -166,108 +167,70 @@
                 <div class="flex items-center gap-3">
                     <div class="bg-rose-600 p-1.5 rounded text-white"><i class="fa-solid fa-user-secret"></i></div>
                     <div>
-                        <h2 class="text-sm font-bold">ระบบจัดการหลังบ้าน</h2>
-                        <div class="text-[10px] text-slate-400">สิทธิ์: Super Admin (Demo Mode)</div>
+                        <h2 class="text-sm font-bold">จัดการหลังบ้าน</h2>
+                        <div class="text-[10px] text-slate-400">Super Admin Mode</div>
                     </div>
                 </div>
-                <button onclick="showPage('home')" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-white/20">ออกจากหลังบ้าน</button>
+                <button onclick="showPage('home')" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-white/20">ออกจากระบบ</button>
             </div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
             
             <div class="lg:col-span-1 space-y-1 bg-white p-3 rounded-xl border border-gray-100 h-fit shadow-sm">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 ml-2">Main Menu</div>
-                <button onclick="showTab('bk-dash')" class="w-full text-left p-3 rounded-lg hover:bg-rose-50 font-medium text-sm text-slate-600 hover:text-rose-600 transition flex gap-3 items-center"><i class="fa-solid fa-chart-pie w-5 text-center"></i> สรุปผล (Stats)</button>
-                <button onclick="showTab('bk-product')" class="w-full text-left p-3 rounded-lg hover:bg-rose-50 font-medium text-sm text-slate-600 hover:text-rose-600 transition flex gap-3 items-center"><i class="fa-solid fa-box w-5 text-center"></i> จัดการสินค้า</button>
-                <button onclick="showTab('bk-chat')" class="w-full text-left p-3 rounded-lg hover:bg-rose-50 font-medium text-sm text-slate-600 hover:text-rose-600 transition flex gap-3 items-center justify-between">
-                    <div class="flex gap-3 items-center"><i class="fa-solid fa-comments w-5 text-center"></i> ตอบแชทลูกค้า</div>
-                    <span class="bg-red-500 text-white text-[9px] px-1.5 rounded-full blink-dot" id="fake-chat-badge">9+</span>
-                </button>
-                <button onclick="showTab('bk-topup')" class="w-full text-left p-3 rounded-lg hover:bg-rose-50 font-medium text-sm text-slate-600 hover:text-rose-600 transition flex gap-3 items-center"><i class="fa-solid fa-bolt w-5 text-center"></i> เติมเงินด่วน</button>
-                <button onclick="showTab('bk-bot')" class="w-full text-left p-3 rounded-lg hover:bg-rose-50 font-medium text-sm text-slate-600 hover:text-rose-600 transition flex gap-3 items-center"><i class="fa-solid fa-robot w-5 text-center"></i> ตั้งค่าบอท</button>
+                <button onclick="showTab('bk-dash')" class="bk-menu-btn active"><i class="fa-solid fa-chart-pie w-5"></i> สรุปผล (Stats)</button>
+                <button onclick="showTab('bk-slip')" class="bk-menu-btn"><i class="fa-solid fa-file-invoice-dollar w-5"></i> ตรวจสอบสลิป <span class="bg-red-500 text-white text-[9px] px-1.5 rounded-full ml-auto">9</span></button>
+                <button onclick="showTab('bk-banner')" class="bk-menu-btn"><i class="fa-solid fa-image w-5"></i> ตั้งค่าเว็บไซต์</button>
+                <button onclick="showTab('bk-chat')" class="bk-menu-btn"><i class="fa-solid fa-comments w-5"></i> ตอบแชทลูกค้า <span class="bg-red-500 text-white text-[9px] px-1.5 rounded-full ml-auto blink-dot">Live</span></button>
             </div>
 
             <div class="lg:col-span-3 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 min-h-[600px]">
                 
                 <div id="bk-dash" class="bk-tab">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-line text-rose-500"></i> สรุปผลร้านค้า</h3>
+                    <h3 class="text-lg font-bold mb-4">ภาพรวมร้านค้า (Real-time)</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100"><div class="text-2xl font-black text-blue-600">842</div><div class="text-xs text-blue-400">ผู้เข้าชมวันนี้</div></div>
-                        <div class="bg-green-50 p-4 rounded-xl border border-green-100"><div class="text-2xl font-black text-green-600">฿12,500</div><div class="text-xs text-green-400">รายได้รวม</div></div>
-                        <div class="bg-orange-50 p-4 rounded-xl border border-orange-100"><div class="text-2xl font-black text-orange-600">56</div><div class="text-xs text-orange-400">ออเดอร์</div></div>
-                        <div class="bg-purple-50 p-4 rounded-xl border border-purple-100"><div class="text-2xl font-black text-purple-600">20</div><div class="text-xs text-purple-400">สินค้าทั้งหมด</div></div>
+                        <div class="stat-card bg-blue-50 text-blue-600"><div class="text-2xl font-black" id="stat-views">1,204</div><div class="text-xs">ผู้เข้าชม</div></div>
+                        <div class="stat-card bg-green-50 text-green-600"><div class="text-2xl font-black" id="stat-sales">฿24,500</div><div class="text-xs">ยอดขาย</div></div>
+                        <div class="stat-card bg-orange-50 text-orange-600"><div class="text-2xl font-black" id="stat-orders">89</div><div class="text-xs">คำสั่งซื้อ</div></div>
+                        <div class="stat-card bg-purple-50 text-purple-600"><div class="text-2xl font-black">20</div><div class="text-xs">สินค้า</div></div>
                     </div>
-                    <div class="bg-slate-50 h-64 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400">
-                        [ พื้นที่กราฟแสดงสถิติยอดขาย 30 วัน ]
+                    <div class="p-3 bg-yellow-50 border border-yellow-100 rounded text-xs text-yellow-700 text-center">
+                        <i class="fa-solid fa-rotate animate-spin mr-1"></i> กำลังอัปเดตสถิติสด... (เปลี่ยนทุก 50 วิ)
                     </div>
                 </div>
 
-                <div id="bk-product" class="bk-tab hidden">
-                    <h3 class="text-lg font-bold mb-4">จัดการสินค้า (20 รายการ)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left">
-                            <thead class="bg-slate-50 text-slate-500 uppercase text-[10px]"><tr><th class="p-3 rounded-l-lg">IMG</th><th class="p-3">ชื่อสินค้า</th><th class="p-3">ราคา</th><th class="p-3 rounded-r-lg text-center">Action</th></tr></thead>
-                            <tbody id="admin-product-list"></tbody>
-                        </table>
+                <div id="bk-slip" class="bk-tab hidden">
+                    <h3 class="text-lg font-bold mb-4">รายการแจ้งโอน (รอตรวจสอบ 9 รายการ)</h3>
+                    <div id="slip-list" class="space-y-3 max-h-[500px] overflow-y-auto"></div>
+                </div>
+
+                <div id="bk-banner" class="bk-tab hidden">
+                    <h3 class="text-lg font-bold mb-4">ตั้งค่าหน้าเว็บ / แบนเนอร์</h3>
+                    <div class="space-y-4 max-w-lg">
+                        <div>
+                            <label class="block text-xs font-bold mb-1">ลิ้งค์รูปภาพแบนเนอร์ (1920x540)</label>
+                            <input type="text" id="admin-banner-url" class="w-full border p-2 rounded text-sm" value="https://via.placeholder.com/1920x540/111827/e11d48?text=New+Banner+Image">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1">ข้อความหัวข้อ</label>
+                            <input type="text" id="admin-banner-text" class="w-full border p-2 rounded text-sm" value="พื้นที่แบนเนอร์หลัก">
+                        </div>
+                        <button onclick="updateBanner()" class="btn-primary px-6 py-2 rounded text-sm font-bold">บันทึกและแสดงผลทันที</button>
                     </div>
                 </div>
 
                 <div id="bk-chat" class="bk-tab hidden">
-                    <h3 class="text-lg font-bold mb-4 flex justify-between items-center">
-                        <span><i class="fa-solid fa-comments text-rose-500"></i> ตอบแชท (จำลองลูกค้า)</span>
-                        <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Live: <span id="online-count">12</span> users</span>
-                    </h3>
+                    <h3 class="text-lg font-bold mb-4">ตอบแชทลูกค้า</h3>
                     <div class="flex border border-gray-200 rounded-xl h-[500px] overflow-hidden">
-                        <div class="w-1/3 border-r bg-slate-50 overflow-y-auto" id="fake-chat-list">
-                            </div>
+                        <div class="w-1/3 border-r bg-slate-50 overflow-y-auto" id="fake-chat-list"></div>
                         <div class="w-2/3 flex flex-col bg-white">
-                            <div class="p-3 border-b flex justify-between items-center bg-white shadow-sm z-10">
-                                <span class="font-bold text-sm" id="chat-target-name">เลือกแชท...</span>
-                                <i class="fa-solid fa-circle-info text-slate-300"></i>
-                            </div>
-                            <div id="admin-chat-display" class="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-3">
-                                <div class="text-center text-xs text-slate-300 mt-20">คลิกที่รายชื่อด้านซ้ายเพื่อเริ่มตอบ</div>
-                            </div>
+                            <div class="p-3 border-b bg-white shadow-sm font-bold text-sm" id="chat-target-name">เลือกแชท...</div>
+                            <div id="admin-chat-display" class="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-3"></div>
                             <div class="p-3 border-t bg-white flex gap-2">
-                                <input type="text" id="admin-chat-input" class="flex-1 border rounded-full px-4 text-sm bg-slate-50 focus:bg-white transition" placeholder="ตอบกลับ...">
-                                <button onclick="adminReply()" class="bg-blue-600 text-white w-9 h-9 rounded-full shadow hover:bg-blue-700"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                                <input type="text" id="admin-chat-input" class="flex-1 border rounded-full px-4 text-sm" placeholder="ตอบกลับ...">
+                                <button onclick="adminReply()" class="bg-blue-600 text-white w-9 h-9 rounded-full"><i class="fa-solid fa-paper-plane text-xs"></i></button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div id="bk-topup" class="bk-tab hidden">
-                    <h3 class="text-lg font-bold mb-4">เติมเงินด่วน (Manual Topup)</h3>
-                    <div class="bg-white border border-gray-200 rounded-xl p-6 max-w-md mx-auto shadow-sm">
-                        <label class="block text-xs font-bold text-slate-500 mb-1">UID ลูกค้า</label>
-                        <input type="text" id="admin-topup-uid" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm mb-4" placeholder="เช่น 12345678">
-                        <label class="block text-xs font-bold text-slate-500 mb-1">จำนวนเงิน</label>
-                        <input type="number" id="admin-topup-amt" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm mb-6" placeholder="0.00">
-                        <button onclick="adminTopup()" class="w-full btn-primary py-2.5 rounded-lg font-bold text-sm">ยืนยันการเติมเงิน</button>
-                        <p class="text-[10px] text-slate-400 text-center mt-3">*เงินจะเข้าทันทีไม่ต้องรอตรวจสอบ (Demo)</p>
-                    </div>
-                </div>
-
-                <div id="bk-bot" class="bk-tab hidden">
-                    <h3 class="text-lg font-bold mb-4">ตั้งค่าบอทอัตโนมัติ</h3>
-                    <div class="space-y-4 max-w-lg">
-                        <div class="p-4 bg-yellow-50 border border-yellow-100 rounded-xl text-xs text-yellow-700 mb-4">
-                            <i class="fa-solid fa-lightbulb"></i> บอทจะช่วยตอบลูกค้าหรือส่งรูปสินค้าตัวอย่างตามเวลาที่กำหนด
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold mb-1">ข้อความบอท</label>
-                            <textarea id="bot-msg" class="w-full border p-3 rounded-lg text-sm bg-slate-50" rows="3">สวัสดีครับ สินค้าใหม่มาแล้วนะครับ! 🍑</textarea>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="bot-send-img" class="w-4 h-4 accent-rose-600">
-                            <label for="bot-send-img" class="text-sm text-slate-600">ให้บอทส่งรูปภาพด้วย (สุ่มรูป)</label>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold mb-1">ความถี่ (นาที)</label>
-                            <input type="number" id="bot-interval" class="w-full border p-2 rounded-lg text-sm bg-slate-50" value="2">
-                        </div>
-                        <button onclick="saveBotSettings()" class="btn-primary px-6 py-2 rounded-lg text-sm font-bold">บันทึกตั้งค่า</button>
                     </div>
                 </div>
 
@@ -276,41 +239,36 @@
     </div>
 
     <script>
-        // 💾 DATA
+        // 💾 STATE
         let currentUser = { name: "Guest", uid: null, balance: 0, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=User" };
         let products = [];
-        
-        // 🛠️ Generate 20 Products
-        for(let i=1; i<=20; i++) {
-            products.push({
-                id: i,
-                name: `สินค้าตัวอย่าง ${i}`,
-                price: Math.floor(Math.random() * 500) + 50, // Random price 50-550
-                image: `https://via.placeholder.com/500x500/f1f5f9/94a3b8?text=Product+${i}%0A(1000x1000)`
-            });
-        }
-
-        // 🛠️ Fake Users for Admin Chat
         let fakeUsers = [
-            { id: 101, name: "น้องมายด์", msg: "แอดคะ เติมเงินยังไงคะ?", time: "10:02", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mind" },
-            { id: 102, name: "Killer99", msg: "ขอเลขบัญชีหน่อยครับ", time: "09:58", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Killer" },
-            { id: 103, name: "Somchai_K", msg: "สินค้าหมดแล้วหรอครับ?", time: "09:45", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Som" },
-            { id: 104, name: "Lisa Fanclub", msg: "สลิปครับ", time: "09:30", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" },
-            { id: 105, name: "User888", msg: "ทักครับ", time: "09:15", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=888" },
+            { id: 1, name: "สมชาย ใจดี", msg: "ยอดไม่เข้าครับแอด?", time: "10:02", type: "problem" },
+            { id: 2, name: "Nong Mind", msg: "สินค้านี้ดียังไงคะ?", time: "09:58", type: "question" },
+            { id: 3, name: "Killer99", msg: "[ส่งรูปภาพสลิป]", time: "09:45", type: "slip" },
+            { id: 4, name: "Tony Stark", msg: "รับวอเลทไหมครับ?", time: "09:30", type: "question" },
+            { id: 5, name: "Lisa Fan", msg: "ช่วยแนะนำโปรหน่อย", time: "09:15", type: "question" },
+            { id: 6, name: "User888", msg: "สินค้าหมดหรอครับ", time: "09:00", type: "stock" },
+            { id: 7, name: "DekThai", msg: "ขอเลขบัญชีครับ", time: "08:45", type: "buy" },
+            { id: 8, name: "ProGamer", msg: "เติมเกมนี้ได้ไหม", time: "08:30", type: "question" },
+            { id: 9, name: "Manee", msg: "โอนแล้วค่ะ", time: "08:15", type: "slip" },
         ];
-
-        let botTimer = null;
-        let timeLeft = 600; // 10 mins
+        
+        let timeLeft = 600;
 
         // 🚀 INIT
         window.onload = () => {
+            generateProducts();
             renderProducts();
-            login(); // Auto login
+            renderFakeSlips();
+            startStatsUpdater();
+            startFakeChatSim();
+            login(); // Auto login for demo
             startTimer();
-            startFakeChatSimulation();
             showPage('home');
         };
 
+        // ⏱️ TIMER
         function startTimer() {
             setInterval(() => {
                 timeLeft--;
@@ -321,185 +279,176 @@
             }, 1000);
         }
 
-        // 🧭 NAVIGATION
-        function showPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            window.scrollTo(0,0);
-            
-            if(pageId === 'backend') {
-                renderAdminProducts();
-                renderFakeChatList();
+        // 📈 STATS UPDATER (Every 50s)
+        function startStatsUpdater() {
+            setInterval(() => {
+                let views = parseInt(document.getElementById('stat-views').innerText.replace(/,/g, ''));
+                let sales = parseInt(document.getElementById('stat-sales').innerText.replace(/,/g, '').replace('฿', ''));
+                
+                views += Math.floor(Math.random() * 10) + 1;
+                sales += (Math.floor(Math.random() * 2) === 1 ? 150 : 0); // Chance to increase sales
+
+                document.getElementById('stat-views').innerText = views.toLocaleString();
+                document.getElementById('stat-sales').innerText = '฿' + sales.toLocaleString();
+                
+                // Show notification toast (Optional)
+            }, 50000);
+        }
+
+        // 🛒 PRODUCTS (20 Items)
+        function generateProducts() {
+            for(let i=1; i<=20; i++) {
+                products.push({
+                    id: i,
+                    name: `สินค้าทดสอบ ${i}`,
+                    price: Math.floor(Math.random() * 500) + 50,
+                    image: `https://via.placeholder.com/1000x1000/f1f5f9/94a3b8?text=Product+${i}%0A(1000x1000)`
+                });
             }
         }
 
-        function showTab(tabId) {
-            document.querySelectorAll('.bk-tab').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-        }
-
-        // 🛒 RENDER PRODUCTS
         function renderProducts() {
             const html = products.map(p => `
                 <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden border border-gray-100 group">
                     <div class="relative overflow-hidden aspect-square">
                         <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute bottom-0 left-0 bg-black/50 text-white text-[9px] px-2 py-1 backdrop-blur-sm">Size: 1000x1000</div>
+                        <div class="absolute bottom-0 left-0 bg-black/60 text-white text-[9px] px-2 py-1">Size: 1000x1000</div>
                     </div>
                     <div class="p-3">
                         <h3 class="font-bold text-slate-800 text-sm truncate">${p.name}</h3>
                         <div class="flex justify-between items-center mt-2">
                             <span class="text-rose-600 font-black text-base">฿${p.price}</span>
-                            <button onclick="alert('✅ จำลองการสั่งซื้อสำเร็จ!')" class="bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-cart-shopping text-xs"></i></button>
+                            <button onclick="alert('✅ สั่งซื้อ ${p.name} สำเร็จ!')" class="bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-cart-shopping text-xs"></i></button>
                         </div>
                     </div>
                 </div>
             `).join('');
-            
             document.getElementById('product-grid').innerHTML = html;
             document.getElementById('shop-grid').innerHTML = html;
         }
 
-        function renderAdminProducts() {
-            document.getElementById('admin-product-list').innerHTML = products.map(p => `
-                <tr class="border-b hover:bg-slate-50">
-                    <td class="p-2"><img src="${p.image}" class="w-8 h-8 rounded border"></td>
-                    <td class="p-2"><input type="text" value="${p.name}" class="border rounded p-1 w-full text-xs bg-white"></td>
-                    <td class="p-2"><input type="number" value="${p.price}" class="border rounded p-1 w-16 text-xs bg-white"></td>
-                    <td class="p-2 text-center"><button class="text-green-500 hover:text-green-700"><i class="fa-solid fa-save"></i></button></td>
-                </tr>
-            `).join('');
-        }
-
-        // 🔐 AUTH
-        function login() {
-            if(!currentUser.uid) currentUser.uid = Math.floor(10000000 + Math.random() * 90000000);
-            document.getElementById('guest-menu').classList.add('hidden');
-            document.getElementById('user-menu').classList.remove('hidden');
-            document.getElementById('user-menu').classList.add('flex');
-            updateUserDisplay();
-            
-            // Welcome msg
-            addChatMessage('Admin', 'สวัสดีครับ ยินดีต้อนรับสู่ Peach Web Demo ครับ! 🍑');
-        }
-
-        function updateUserDisplay() {
-            document.getElementById('nav-username').innerText = currentUser.name;
-            document.getElementById('nav-balance').innerText = currentUser.balance.toFixed(2);
-        }
-
-        // 💬 CHAT SYSTEM (Frontend)
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if(!text) return;
-            addChatMessage('User', text);
-            input.value = '';
-            
-            // Auto reply mockup
-            setTimeout(() => {
-                addChatMessage('Admin', 'แอดมินรับทราบครับ (ระบบตอบกลับอัตโนมัติ)');
-            }, 1000);
-        }
-
-        function addChatMessage(sender, text, isImage = false) {
-            const chatBox = document.getElementById('chat-box');
-            const isUser = sender === 'User';
-            const html = `
-                <div class="flex flex-col ${isUser ? 'items-end' : 'items-start'} animate-fade-in">
-                    <div class="chat-bubble ${isUser ? 'chat-user' : 'chat-admin'} shadow-sm">
-                        ${!isUser ? '<span class="text-[9px] font-bold text-rose-500 block mb-1">ADMIN</span>' : ''}
-                        ${isImage ? `<img src="${text}" class="rounded-lg max-w-[150px]">` : text}
+        // 🧾 FAKE SLIPS (9 Items)
+        function renderFakeSlips() {
+            const container = document.getElementById('slip-list');
+            fakeUsers.forEach((u, index) => {
+                container.innerHTML += `
+                    <div class="bg-white p-3 rounded-lg border border-gray-200 flex justify-between items-center shadow-sm" id="slip-${index}">
+                        <div class="flex gap-3 items-center">
+                            <div class="w-10 h-10 bg-slate-100 rounded flex items-center justify-center text-slate-400"><i class="fa-solid fa-image"></i></div>
+                            <div>
+                                <div class="text-sm font-bold text-slate-700">${u.name}</div>
+                                <div class="text-xs text-slate-400">ยอด: ฿${Math.floor(Math.random()*500)+50} • ${u.time}</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="document.getElementById('slip-${index}').remove()" class="bg-green-500 text-white px-3 py-1 rounded text-xs">อนุมัติ</button>
+                            <button onclick="document.getElementById('slip-${index}').remove()" class="bg-red-500 text-white px-3 py-1 rounded text-xs">ปฏิเสธ</button>
+                        </div>
                     </div>
-                </div>
-            `;
-            chatBox.innerHTML += html;
-            chatBox.scrollTop = chatBox.scrollHeight;
+                `;
+            });
         }
 
-        // 🤖 BOT SYSTEM
-        function saveBotSettings() {
-            const msg = document.getElementById('bot-msg').value;
-            const interval = document.getElementById('bot-interval').value;
-            const sendImg = document.getElementById('bot-send-img').checked;
-            
-            if(botTimer) clearInterval(botTimer);
-            
-            alert(`✅ บันทึกบอทแล้ว! จะส่งข้อความทุก ${interval} นาที`);
-            
-            botTimer = setInterval(() => {
-                addChatMessage('Bot', `🤖 [Auto]: ${msg}`);
-                if(sendImg) {
-                    setTimeout(() => addChatMessage('Bot', 'https://via.placeholder.com/300x200/e11d48/fff?text=PROMOTION', true), 500);
-                }
-            }, interval * 60000);
+        // 🖼️ BANNER EDIT
+        function updateBanner() {
+            const url = document.getElementById('admin-banner-url').value;
+            const text = document.getElementById('admin-banner-text').value;
+            document.getElementById('main-banner-img').src = url;
+            document.getElementById('banner-title').innerText = text;
+            alert('✅ อัปเดตหน้าเว็บเรียบร้อย!');
         }
 
-        // 💬 FAKE CHAT SIMULATION (Backend)
+        // 💸 AUTO TOPUP
+        function autoTopup(input) {
+            if(input.files && input.files[0]) {
+                alert('⏳ กำลังตรวจสอบสลิป...');
+                setTimeout(() => {
+                    currentUser.balance += 100;
+                    document.getElementById('nav-balance').innerText = currentUser.balance.toFixed(2);
+                    alert('✅ เติมเงินสำเร็จ! ยอดเงินเข้า ฿100.00');
+                }, 1500);
+            }
+        }
+
+        // 💬 CHAT SIMULATION
         function renderFakeChatList() {
-            const list = document.getElementById('fake-chat-list');
-            list.innerHTML = fakeUsers.map(u => `
-                <div class="p-3 border-b hover:bg-white cursor-pointer chat-sidebar-item flex gap-3 items-center" onclick="selectChat('${u.name}')">
-                    <img src="${u.avatar}" class="w-10 h-10 rounded-full border">
+            document.getElementById('fake-chat-list').innerHTML = fakeUsers.map(u => `
+                <div class="p-3 border-b hover:bg-slate-50 cursor-pointer flex gap-3 items-center" onclick="selectChat('${u.name}', '${u.msg}')">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-500">${u.name[0]}</div>
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between">
                             <div class="font-bold text-xs text-slate-700 truncate">${u.name}</div>
                             <div class="text-[9px] text-slate-400">${u.time}</div>
                         </div>
-                        <div class="text-[10px] text-slate-500 truncate chat-preview-${u.id}">${u.msg}</div>
+                        <div class="text-[10px] text-slate-500 truncate">${u.msg}</div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function startFakeChatSimulation() {
+        function startFakeChatSim() {
+            renderFakeChatList();
+            // Randomly update last message
             setInterval(() => {
-                const randomUser = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-                const msgs = ["สนใจครับ", "โอนแล้วครับ", "สอบถามหน่อย", "ยังมีของไหม?", "ขอบคุณครับ"];
-                const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
-                
-                // Update text visually
-                const preview = document.querySelector(`.chat-preview-${randomUser.id}`);
-                if(preview) {
-                    preview.innerText = randomMsg;
-                    preview.classList.add('text-slate-900', 'font-bold');
-                    setTimeout(() => preview.classList.remove('text-slate-900', 'font-bold'), 2000);
-                }
-            }, 3000); // Update every 3s
+                const randomIdx = Math.floor(Math.random() * fakeUsers.length);
+                const msgs = ["แอดครับ", "ตอบหน่อย", "โอนแล้ว", "ส่งรูปภาพ..."];
+                fakeUsers[randomIdx].msg = msgs[Math.floor(Math.random() * msgs.length)];
+                renderFakeChatList();
+            }, 5000);
         }
 
-        function selectChat(name) {
-            document.getElementById('chat-target-name').innerText = `กำลังคุยกับ: ${name}`;
+        function selectChat(name, msg) {
+            document.getElementById('chat-target-name').innerText = name;
             document.getElementById('admin-chat-display').innerHTML = `
-                <div class="text-center text-xs text-slate-300 my-4">-- ประวัติการสนทนา --</div>
-                <div class="flex flex-col items-start"><div class="chat-bubble chat-admin bg-white border">สวัสดีครับ มีอะไรให้ช่วยไหมครับ?</div></div>
-                <div class="flex flex-col items-end"><div class="chat-bubble chat-user bg-slate-100 text-slate-800">สนใจสินค้าครับ</div></div>
+                <div class="flex flex-col items-start gap-2">
+                    <div class="chat-bubble chat-user bg-slate-100 text-slate-800 self-start ml-0">${msg}</div>
+                    ${msg.includes('รูป') ? '<img src="https://via.placeholder.com/200x300?text=SLIP" class="w-32 rounded-lg">' : ''}
+                </div>
             `;
         }
 
         function adminReply() {
-            const input = document.getElementById('admin-chat-input');
-            if(!input.value) return;
-            const html = `<div class="flex flex-col items-start animate-fade-in"><div class="chat-bubble chat-admin bg-blue-600 text-white shadow">${input.value}</div></div>`;
-            document.getElementById('admin-chat-display').innerHTML += html;
-            input.value = '';
-        }
-
-        // ⚡ ADMIN TOPUP
-        function adminTopup() {
-            const uid = document.getElementById('admin-topup-uid').value;
-            const amt = parseFloat(document.getElementById('admin-topup-amt').value);
-            
-            if(uid == currentUser.uid) {
-                currentUser.balance += amt;
-                updateUserDisplay();
-                alert(`✅ เติมเงินให้ UID ${uid} สำเร็จ!`);
-            } else {
-                alert('⚠️ ไม่พบ UID นี้ (กรุณาใช้ UID ของตัวเองที่ดูได้ในหน้า Profile)');
+            const val = document.getElementById('admin-chat-input').value;
+            if(val) {
+                document.getElementById('admin-chat-display').innerHTML += `<div class="flex flex-col items-end"><div class="chat-bubble chat-admin bg-blue-600 text-white">${val}</div></div>`;
+                document.getElementById('admin-chat-input').value = '';
             }
         }
 
-        function fakeTopup() { alert('⏳ ระบบกำลังตรวจสอบสลิป... (จำลอง)'); }
+        // 🧭 Navigation & Helpers
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+        function showTab(tabId) {
+            document.querySelectorAll('.bk-tab').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+        function login() {
+            document.getElementById('guest-menu').classList.add('hidden');
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('user-menu').classList.add('flex');
+        }
+        function sendMessage() {
+            const val = document.getElementById('chat-input').value;
+            if(val) {
+                document.getElementById('chat-box').innerHTML += `<div class="flex flex-col items-end"><div class="chat-bubble chat-user">${val}</div></div>`;
+                document.getElementById('chat-input').value = '';
+                setTimeout(() => {
+                    document.getElementById('chat-box').innerHTML += `<div class="flex flex-col items-start"><div class="chat-bubble chat-admin">แอดมินรับทราบครับ 🍑</div></div>`;
+                    document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+                }, 1000);
+            }
+        }
+
+        // Custom Styles Class
+        document.querySelectorAll('.bk-menu-btn').forEach(btn => {
+            btn.className = 'w-full text-left p-3 rounded-lg hover:bg-rose-50 font-medium text-sm text-slate-600 hover:text-rose-600 transition flex gap-3 items-center';
+        });
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.className += ' p-4 rounded-xl border';
+        });
 
     </script>
 </body>
